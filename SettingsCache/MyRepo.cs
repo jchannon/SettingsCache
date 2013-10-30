@@ -21,14 +21,10 @@ namespace SettingsCache
             mysettingval = appSettings.GetSetting<int>("GracePeriod");
         }
 
-        public string GetDbState()
-        {
-            return dbConnection.State.ToString();
-        }
+      
     }
 
     public interface IRepo
     {
-        string GetDbState();
     }
 }

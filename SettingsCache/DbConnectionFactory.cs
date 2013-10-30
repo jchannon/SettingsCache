@@ -14,11 +14,6 @@ namespace SettingsCache
             return connection;
         }
 
-        public IDbConnection GetConnection()
-        {
-            var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["MyConnection"].ConnectionString);
-
-            return connection;
-        }
+   
     }
 }

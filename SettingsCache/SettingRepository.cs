@@ -9,27 +9,27 @@ namespace SettingsCache
     /// </summary>
     public class SettingRepository : ISettingRepository
     {
-        private readonly IDbConnection dbConnection;
+        private readonly IDbConnectionFactory dbConnectionFactory;
 
-        public SettingRepository(IDbConnection dbConnection)
+        public SettingRepository(IDbConnectionFactory dbConnectionFactory)
         {
-            this.dbConnection = dbConnection;
+            this.dbConnectionFactory = dbConnectionFactory;
         }
 
         public string GetSetting(string key)
         {
             var settingValue = string.Empty;
-            dbConnection.Open();
-
-            var predicate = Predicates.Field<Setting>(x => x.Name, Operator.Eq, key);
-            var setting = dbConnection.GetList<Setting>(predicate).FirstOrDefault();
-            if (setting != null)
+            using (var dbConnection = dbConnectionFactory.GetOpenConnection())
             {
-                settingValue = setting.Value;
+                var predicate = Predicates.Field<Setting>(x => x.Name, Operator.Eq, key);
+                var setting = dbConnection.GetList<Setting>(predicate).FirstOrDefault();
+                if (setting != null)
+                {
+                    settingValue = setting.Value;
+                }
+
+                dbConnection.Close();
             }
-
-            dbConnection.Close();
-
             return settingValue;
         }
     }
